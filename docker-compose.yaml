@@ -1,0 +1,33 @@
+services:
+  cashcloud:
+    build:
+      context: .
+      dockerfile: ./apps/cashcloud-microservices/Dockerfile
+      target: development
+    command: pnpm run start:dev cashcloud-microservices
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
+
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+      target: development
+    command: pnpm run start:dev auth
+    ports:
+      - '3001:3001'
+    volumes:
+      - .:/usr/src/app
+
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: toor
+      MYSQL_DATABASE: micro
+      MYSQL_USER: desha
+      MYSQL_PASSWORD: desha
+    ports:
+      - "3307:3306"
