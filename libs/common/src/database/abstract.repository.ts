@@ -6,12 +6,13 @@ import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity
 export abstract class AbstractRepository<
   TEntity extends AbstractEntity<TEntity>,
 > {
-  constructor(
+  protected constructor(
     private readonly entityRepository: Repository<TEntity>,
     private readonly entityManager: EntityManager,
   ) {}
 
   async create(entity: TEntity): Promise<TEntity> {
+    console.log(entity);
     return await this.entityManager.save(entity);
   }
 

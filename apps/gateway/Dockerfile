@@ -6,9 +6,16 @@ COPY package.json pnpm-lock.yaml ./
 
 RUN npm i -g pnpm && pnpm i
 
-COPY . .
+COPY apps/gateway apps/gateway
 
-RUN pnpm run build
+COPY tsconfig.json tsconfig.json
+
+COPY nest-cli.json nest-cli.json
+
+COPY libs libs
+
+
+RUN pnpm run build gateway
 
 FROM node:alpine as Production
 
@@ -23,4 +30,4 @@ RUN npm i -g pnpm && pnpm i --prod
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD ["node","dist/apps/cashcloud-microservices/main"]
+CMD ["node","dist/apps/gateway/main"]

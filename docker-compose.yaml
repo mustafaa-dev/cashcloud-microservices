@@ -1,15 +1,4 @@
 services:
-  cashcloud:
-    build:
-      context: .
-      dockerfile: ./apps/cashcloud-microservices/Dockerfile
-      target: development
-    command: pnpm run start:dev cashcloud-microservices
-    ports:
-      - '3000:3000'
-    volumes:
-      - .:/usr/src/app
-
   auth:
     build:
       context: .
@@ -17,10 +6,24 @@ services:
       target: development
     command: pnpm run start:dev auth
     ports:
-      - '3001:3001'
+      - '9000:9000'
     volumes:
       - .:/usr/src/app
+    env_file:
+      - ./apps/auth/.env
 
+  stores:
+    build:
+      context: .
+      dockerfile: ./apps/stores/Dockerfile
+      target: development
+    command: pnpm run start:dev stores
+    ports:
+      - '9002:9002'
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - ./apps/stores/.env
 
   mysql:
     image: mysql:latest
@@ -30,4 +33,22 @@ services:
       MYSQL_USER: desha
       MYSQL_PASSWORD: desha
     ports:
-      - "3307:3306"
+      - '3306:3306'
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - 5672:5672
+
+
+  gateway:
+    build:
+      context: .
+      dockerfile: ./apps/gateway/Dockerfile
+      target: development
+    command: pnpm run start:dev gateway
+    ports:
+      - '9009:9009'
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - ./apps/gateway/.env

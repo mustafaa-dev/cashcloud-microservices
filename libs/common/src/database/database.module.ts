@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@app/common/config/config.module';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
@@ -8,7 +7,6 @@ import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-clas
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         host: configService.get('DB_HOST'),
         type: 'mysql',
@@ -23,6 +21,8 @@ import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-clas
       inject: [ConfigService],
     }),
   ],
+  providers: [ConfigService],
+  exports: [ConfigService],
 })
 export class DatabaseModule {
   static forFeature(entities: EntityClassOrSchema[]) {
